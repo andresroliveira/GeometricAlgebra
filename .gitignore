@@ -35,3 +35,7 @@
 
 # Shell
 *.sh 
+*.bat
+
+#VSCode
+/.vscode
