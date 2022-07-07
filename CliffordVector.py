@@ -84,6 +84,27 @@ class CliffordVector():
         self = self - other
         return self
 
+    # Multiply
+
+    # Inner Product
+    def __or__(self, other):
+        return 1
+
+    # Outer Product
+    def __xor__(self, other):
+        return 1
+
+    #Geometric Product
+    def __mul__(self, other):
+        inner = self|other
+        outer = self^other
+
+        print(inner, outer)
+
+        print(type(inner), type(outer))
+
+        return  inner + outer
+
 
     def __eq__(self, other):
         if isinstance(other, CliffordVector):
@@ -104,7 +125,9 @@ if __name__ == '__main__':
     U = CliffordVector(v = [0, 1, 0])
     # print(U)
 
-    print((4.5 + U + 4.5) - 9)
+    print(U | V)
+    print(U ^ V)
+    print(U * V)
 
 
 
