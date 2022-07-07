@@ -35,6 +35,9 @@ class EuclideanVector():
     def __list__(self):
         return self.v
 
+    def __iter__(self):
+        return iter(self.v)
+
     def __str__(self):
         return f'n: {self.n}, v: {self.v}'
 
