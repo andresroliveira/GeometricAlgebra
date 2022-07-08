@@ -1,4 +1,5 @@
 import numpy
+from __aux__methods import geometric_product, colision
 
 class CliffordVector():
     def __init__(self, n = None, v = None):
@@ -88,23 +89,45 @@ class CliffordVector():
 
     # Inner Product
     def __or__(self, other):
-        return 1
+        return 1/2 * (self*other + other*self)
 
-    # Outer Product
+    def __ror__(self, other):
+        return self | other
+
+    # Outer Product        
+
     def __xor__(self, other):
-        return 1
+        return self*other - other*self
+
+    def __rxor__(self, other):
+        return self ^ other
 
     #Geometric Product
     def __mul__(self, other):
-        inner = self|other
-        outer = self^other
+        if isinstance(other, int) or isinstance(other, float):
+            new_n = self.n
+            new_v = [0 for i in range(2**new_n)]
+            new_v[0] += other
+            other = self.__class__(new_n, new_v)
 
-        print(inner, outer)
+        if self.n != other.n:
+            raise Exception("Not same dim")
 
-        print(type(inner), type(outer))
+        out = self.__class__(self.n)
 
-        return  inner + outer
+        for i in range(1 << self.n):
+            for j in range(1<<other.n):
+                coef, mask = geometric_product(self.v[i], i, other.v[j], j)
+                out.v[mask] += coef
 
+        return out
+        # inner = self|other
+        # outer = self^other
+
+        # return inner + outer
+
+    def __rmul__(self, other):
+        return self * other
 
     def __eq__(self, other):
         if isinstance(other, CliffordVector):
@@ -114,20 +137,41 @@ class CliffordVector():
     def __ne__(self, other):
         return not(self == other)
 
-    
+    def __invert__(self):
+        new_n = self.n
+        new_v = self.v.copy()
 
+        for i in range(len(new_v)):
+            sgn = 1
+            if colision(i)%4 > 1:
+                sgn = -1
+            new_v[i] *= sgn
+
+        return self.__class__(new_n, new_v)
 
 
 
 if __name__ == '__main__':
     V = CliffordVector(v = [1, 0, 0])
-    # print(V)
+    print("V: ", V)
     U = CliffordVector(v = [0, 1, 0])
-    # print(U)
+    print("U: ", U)
 
-    print(U | V)
-    print(U ^ V)
-    print(U * V)
+    print("U | V: ", U | V)
+    print("U ^ V: ", U ^ V)
+    print("V ^ U: ", V ^ U)
+    print("U * V: ", U * V)
+    print("V * U: ", V * U)
+
+    print()
+
+    print("U * U: ", U * U)
+    print("U | U: ", U | U)
+    print("U ^ U: ", U ^ U)
+
+    # print("U U: ", U*U)e
+
+
 
 
 
